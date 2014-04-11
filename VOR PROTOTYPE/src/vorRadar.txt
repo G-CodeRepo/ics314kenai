@@ -1,0 +1,8 @@
+<html>
+	<head>
+		<title>Tictactoe</title>
+	</head>
+	<body>
+		<applet code="vorGUI" width="200" height="180">You do not have a Java plugin.</applet>
+	</body>
+</html>
