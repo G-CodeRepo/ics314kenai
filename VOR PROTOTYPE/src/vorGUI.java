@@ -6,42 +6,29 @@ import javax.swing.*;
 import java.util.*;
 import java.applet.*;
 
-public class vorGUI extends JFrame implements ActionListener{
+public class vorGUI extends JFrame{
+	private int radial = 0;
 	private JPanel top;
-	private JButton minusOBS = new JButton(" ");
-	private JButton plusOBS = new JButton(" ");
+	private JButton obs;
+	private JLabel intendedRadial = new JLabel("Radial: " + radial);
 	
 	public vorGUI(){
-		vorPrototype VOR = new vorPrototype(120, "--.", true);
-		minusOBS.addActionListener(this);
-		plusOBS.addActionListener(this);
 		this.top = new JPanel();
 		top.setLayout(new BorderLayout());
-		JPanel center = new JPanel();
-		center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-	}
-	
-	public void actionPerformed(ActionEvent ae){
-		if(ae.getSource() == minusOBS){
-			//to do
-		}
-		else if(ae.getSource() == plusOBS){
-			//to do
-		}
-	}
-	
-	/*
-	 * Function: This method is going to "paint" or draw the VOR radar to the 
-	 * JPanel. The name of this function must be paint, otherwise program will not work
-	 */
-	public void paint(Graphics g){
-		g.setColor(Color.GREEN);
-		g.drawOval(100, 100, 200, 200);
+		JPanel north = new JPanel();
+		north.add(intendedRadial);
+		top.add(north, "North");
 	}
 	
 	public static void main(String[] args){
-		vorGUI radarGUI = new vorGUI();
-		radarGUI.paint(null);
-		
+		JFrame window = new JFrame("VOR Radar");
+	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    vorGUI vor = new vorGUI();
+	    window.setContentPane(vor.top);
+	    window.pack();
+	    window.setVisible(true);
+	  	//new vorGUI().setVisible(true);
+		window.setSize(400,400);
 	}
+	
 }
