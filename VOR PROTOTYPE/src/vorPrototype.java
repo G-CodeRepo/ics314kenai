@@ -119,10 +119,10 @@ public class vorPrototype {
 			}
 			System.out.println("testing arrays: " + mcSplit[i]);
 		}
-		mc1 = mcSplit[1];
-		mc2 = mcSplit[2];
-		if(mcSplit[3] != null){
-			mc2 = mcSplit[3];
+		mc1 = mcSplit[0];
+		mc2 = mcSplit[1];
+		if(mcSplit[2] != null){
+			mc2 = mcSplit[1];
 		}
 	}
 	
