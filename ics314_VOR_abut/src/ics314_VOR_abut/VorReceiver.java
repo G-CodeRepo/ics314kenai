@@ -715,7 +715,7 @@ public class VorReceiver {
 			v.setOBS(90);
 			v.printVorStatus();
 		
-			// end
+	
 		} catch (IllegalArgumentException e) {
 			System.err.println("ERROR: OBS values must be within 1-360 degrees, where 360 can also be zero");
 		}
