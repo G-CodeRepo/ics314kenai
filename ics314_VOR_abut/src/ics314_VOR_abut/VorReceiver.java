@@ -238,8 +238,8 @@ public class VorReceiver {
 		int currRadial = this.getCurrRadial();
 		boolean test = false;
 		
-		/*WORKING OLD*/
-		/*if (currRadial == abeamed[0] || currRadial == abeamed[1]) { // current radial == deadZone, cannot detect this radial
+
+		if (currRadial == abeamed[0] || currRadial == abeamed[1]) { // current radial == deadZone, cannot detect this radial
 			test = false;
 		} else if (currOBS < 270 || currOBS > 90) { 	// OBS radial is between 90 and 270
 			test = (currRadial < abeamed[0] && currRadial > abeamed[1]);
@@ -249,21 +249,6 @@ public class VorReceiver {
 			test = (currRadial > abeamed[1] && currRadial < abeamed[0]);
 		} else {
 			// do nothing. should return false at this point
-		}*/
-		
-		
-		if (currRadial == abeamed[0] || currRadial == abeamed[1]) { // current radial == deadZone, cannot detect this radial
-		test = false;
-		} else if (currOBS < 90) { 	// degrees 0-90
-			test = (currRadial < abeamed[0] || currRadial > abeamed[1]);
-		} else if (currOBS > 90 && currOBS < 180) {	
-			//test = (currRadial < abeamed[0] || currRadial > abeamed[1]);
-		} else if (currOBS > 180 && currOBS < 270) {	// OBS radial is between 180 and 360 
-			//test = (currRadial > abeamed[1] && currRadial < abeamed[0]);
-		} else if (currOBS < 270) {
-			// do nothing. should return false at this point
-		} else {
-			System.err.println("NOT SUPPOSE TO BE HERE");
 		}
 		
 		return test;
