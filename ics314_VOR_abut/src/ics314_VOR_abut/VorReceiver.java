@@ -2,6 +2,8 @@ package ics314_VOR_abut;
 import java.util.ArrayList;
 import java.util.List;
 
+import test.PartialTest;
+
 
 // Change log 4/15/2014
 // Modifier by: Gerald Abut
@@ -47,8 +49,8 @@ import java.util.List;
 // Change log 4/29/2014
 // Modified by: Gerald Abut
 // all instance variables are now private
-// added getNeedPosition method
-// added setNeedPosition method
+// added getNeedlePosition method
+// added setNeedlePosition method
 // added moveNeedle method
 // modified getVorStatus to also include needle position
 // modified the constructors to set needle position
@@ -61,8 +63,17 @@ import java.util.List;
 // modified incOBS and decOBS to use "adjustDegree" method to wrap around if too many calls to incOBS or decOBS
 // fix constructor so that it actually throws an IllegalArgumentException if the given radial is invalid
 // modified "getOppositeRadial" method so that it returns 360 if 0 degrees was calculated
-// added more condition if OBS is between 90 and 270 degrees for the isTo and isFrom functions
+// added more condition if OBS is between 90 and 270 degrees for the isTo and isFrom methods
 
+// Change log 4/3/2014
+// Modified by: Gerald Abut
+// isTo and isFrom methods are completely overhauled
+// create a PartialTest class
+// create printVorStatus_v1 and printVorStatus_v2 for debugging prints (tests)
+// modified moveNeedle conditions to only include == instead of >= or <=
+// adjust360ToZero and adjustZeroTo360 methods are now public methods
+// getOppositeRadial and setNeedlePosition methods now throws an IllegalArgumentException if given a wrong degree
+// all values of 10 or -10 are now a constant "NEEDLE_LIMIT"
 
 public class VorReceiver {
 	private final int MAX_DEGREE = 360;
@@ -211,18 +222,41 @@ public class VorReceiver {
 		int currOBS = this.getOBS();
 		int currRadial = this.getCurrRadial();
 		boolean test = false;
-
-		if (currRadial == abeamed[0] || currRadial == abeamed[1]) { // current radial == deadZone, cannot detect this radial
-			test = false;
-		} else if (currOBS < 270 || currOBS > 90) {		// OBS radial is between 90 and 270
-			test = (currRadial > abeamed[0]) || (currRadial < abeamed[1]);
-		} else if ((currOBS >= 1) && (currOBS <= 180)) {	// OBS radial is between 1 and 180
-			test = (currRadial > abeamed[0] && currRadial < abeamed[1]);
-		} else if ((currOBS <= 360) && (currOBS >= 180)) {	// OBS radial is between 180 and 360 
-			test = (currRadial < abeamed[1] || currRadial > abeamed[0]);
-		} else {
-			// do nothing. should return false at this point
+		
+		if (currOBS == 360 || currOBS == 0) {	// exactly 360 or 0 degrees
+			if (currRadial > abeamed[0] && currRadial < abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 90 && currOBS > 0) {	// quadrant 1
+			if (currRadial > abeamed[0] && currRadial < abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS == 90) {	// exactly 90 degrees
+			if (currRadial > 180 && currRadial < 360) {
+				test = true;
+			}
+		} else if (currOBS < 180 && currOBS > 90) { // quadrant 2
+			if ((currRadial > abeamed[0]) || (currRadial < abeamed[1])) {
+				test = true;
+			}	
+		} else if (currOBS == 180) {	// exactly 180 degrees
+			if (currRadial > abeamed[0] || currRadial < abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 270 && currOBS > 180) { 	// quadrant 3
+			if (currRadial > abeamed[0] || currRadial < abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS == 270) {	// exactly 270 degrees
+			if (currRadial > 0 && currRadial < abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 360 && currOBS > 270) { // quadrant 4
+			if (currRadial > abeamed[0] && currRadial < abeamed[1]) {
+				test = true;
+			}
 		}
+		
 		return test;
 	}
 	
@@ -238,19 +272,39 @@ public class VorReceiver {
 		int currRadial = this.getCurrRadial();
 		boolean test = false;
 		
-
-		if (currRadial == abeamed[0] || currRadial == abeamed[1]) { // current radial == deadZone, cannot detect this radial
-			test = false;
-		} else if (currOBS < 270 || currOBS > 90) { 	// OBS radial is between 90 and 270
-			test = (currRadial < abeamed[0] && currRadial > abeamed[1]);
-		} else if ((currOBS >= 1) && (currOBS <= 180)) {	// OBS radial is between 1 and 180
-			test = (currRadial < abeamed[0] || currRadial > abeamed[1]);
-		} else if ((currOBS <= 360) && (currOBS >= 180)) {	// OBS radial is between 180 and 360 
-			test = (currRadial > abeamed[1] && currRadial < abeamed[0]);
-		} else {
-			// do nothing. should return false at this point
+		if (currOBS == 360 || currOBS == 0) {	// exactly 360 or 0 degrees
+			if (currRadial < abeamed[0] || currRadial > abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 90 && currOBS > 0) {	// quadrant 1
+			if (currRadial < abeamed[0] || currRadial > abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS == 90) {	// exactly 90 degrees
+			if (currRadial < 180) {
+				test = true;
+			}
+		} else if (currOBS < 180 && currOBS > 90) { // quadrant 2
+			if ((currRadial < abeamed[0]) && (currRadial > abeamed[1])) {
+				test = true;
+			}	
+		} else if (currOBS == 180) {	// exactly 180 degrees
+			if (currRadial < abeamed[0] && currRadial > abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 270 && currOBS > 180) { 	// quadrant 3
+			if (currRadial < abeamed[0] && currRadial > abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS == 270) {	// exactly 270 degrees
+			if (currRadial < abeamed[0] && currRadial > abeamed[1]) {
+				test = true;
+			}
+		} else if (currOBS < 360 && currOBS > 270) { // quadrant 4
+			if (currRadial < abeamed[0] || currRadial > abeamed[1]) {
+				test = true;
+			}
 		}
-		
 		return test;
 	}
 	
@@ -262,7 +316,7 @@ public class VorReceiver {
 	 * @param radial
 	 * @return int
 	 */
-	private int adjust360ToZero(int radial){
+	public int adjust360ToZero(int radial){
 		int adjusted = radial;	
 		if (adjusted == INTERPRET_360) {
 			adjusted = 0;
@@ -275,7 +329,7 @@ public class VorReceiver {
 	 * @param radial
 	 * @return int
 	 */
-	private int adjustZeroTo360(int radial) {
+	public int adjustZeroTo360(int radial) {
 		if (radial == 0) {
 			radial = 360;	// 0 is also 360
 		}
@@ -304,7 +358,7 @@ public class VorReceiver {
 	}
 	
 	/**
-	 * getLeftAbeamedRadial calculates the degree that is abeamed to the left of the radial
+	 * getLeftAbeamedRadial calculates the degree that is abeamed to the left of the vor station
 	 * @return int
 	 */
 	private int getLeftAbeamedRadial() {
@@ -314,7 +368,7 @@ public class VorReceiver {
 	}
 	
 	/**
-	 * getRightAbeamedRadial calculates the degree that is abeamed to the right of the radial
+	 * getRightAbeamedRadial calculates the degree that is abeamed to the right of the vor station
 	 * @return int
 	 */
 	private int getRightAbeamedRadial() {
@@ -359,10 +413,15 @@ public class VorReceiver {
 	/**
 	 * getOppositeRadial returns the opposite degree of the given radial
 	 * @return int
+	 * @throws IllegalArgumentException
 	 */
 	public int getOppositeRadial(int radial) {
 		int arrayOffset = this.DEGREES.size();
-		return this.adjustZeroTo360((radial + OPPOSITE_DEGREE + arrayOffset) % arrayOffset);	// wrap around from left to right
+		if (this.validateRadial(radial) >= 0) {
+			return this.adjustZeroTo360((radial + OPPOSITE_DEGREE + arrayOffset) % arrayOffset);	// wrap around from left to right
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 	
 	
@@ -417,7 +476,7 @@ public class VorReceiver {
 	
 	/**
 	 * moveNeedle sets the value of the position of the needle
-	 * needles range is between -10 to 10
+	 * needle's range is between -10 to 10
 	 * needle positions are even numbers from -10 to 10 (e.g. -10, -8,...2, 4, 6...)
 	 * if numbers are odd, needle will be set to the next even number
 	 * ex: if positive needle position: 1 == 2, 2 == 2, 3 == 4, 4 == 4, ...
@@ -429,8 +488,8 @@ public class VorReceiver {
 		int currRad = this.getCurrRadial();
 		
 		if (this.isTo()) { // plane is pointing in the degrees towards the intended radial
-			if (currRad <= (this.adjustDegree(obs_opposite, -9))) {																	// left of opposite of intended radial
-				this.needle = -10;
+			if ((currRad == (this.adjustDegree(obs_opposite, -9))) || (currRad == (this.adjustDegree(obs_opposite, -this.NEEDLE_LIMIT)))) {																	// left of opposite of intended radial
+				this.needle = -this.NEEDLE_LIMIT;
 			} else if ((currRad == (this.adjustDegree(obs_opposite, -8))) || (currRad == (this.adjustDegree(obs_opposite, -7)))) {	// left of opposite of intended radial 
 				this.needle = -8;
 			} else if ((currRad == (this.adjustDegree(obs_opposite, -6))) || (currRad == (this.adjustDegree(obs_opposite, -5)))) {	// left of opposite of intended radial
@@ -449,15 +508,15 @@ public class VorReceiver {
 				this.needle = 6;
 			} else if ((currRad == (this.adjustDegree(obs_opposite, 7))) || (currRad == (this.adjustDegree(obs_opposite, 8)))) {	// right of opposite of intended radial
 				this.needle = 8;
-			} else if (currRad >= (this.adjustDegree(obs_opposite, 9))) {															// right of opposite of intended radial
-				this.needle = 10;
+			} else if ((currRad == (this.adjustDegree(obs_opposite, 9))) || (currRad == (this.adjustDegree(obs_opposite, this.NEEDLE_LIMIT)))) {															// right of opposite of intended radial
+				this.needle = this.NEEDLE_LIMIT;
 			} else {
 				// SHOULD NOT GO HERE.
 			}
 		} else { // plane is pointing in the degrees away from the intended radial
-			// isTo = true
-			if (currRad >= (this.adjustDegree(obs, 9))) {															// left of intended radial
-				this.needle = -10;
+			// isFrom = true
+			if ((currRad == (this.adjustDegree(obs, 9))) || (currRad == (this.adjustDegree(obs, this.NEEDLE_LIMIT)))) {															// left of intended radial
+				this.needle = -this.NEEDLE_LIMIT;
 			} else if ((currRad == (this.adjustDegree(obs, 8))) || (currRad == (this.adjustDegree(obs, 7)))) {		// left of intended radial
 				this.needle = -8;
 			} else if ((currRad == (this.adjustDegree(obs, 6))) || (currRad == (this.adjustDegree(obs, 5)))) {		// left of intended radial
@@ -476,8 +535,8 @@ public class VorReceiver {
 				this.needle = 6;
 			} else if ((currRad == (this.adjustDegree(obs, -7))) || (currRad == (this.adjustDegree(obs, -8)))) {	// right of  intended radial
 				this.needle = 8;
-			} else if (currRad <= (this.adjustDegree(obs, -9))) {													// right of  intended radial
-				this.needle = 10;
+			} else if ((currRad == (this.adjustDegree(obs, -9))) || (currRad == (this.adjustDegree(obs, -this.NEEDLE_LIMIT)))) {													// right of  intended radial
+				this.needle = this.NEEDLE_LIMIT;
 			} else {
 				// SHOULD NOT GO HERE.
 			}
@@ -487,9 +546,14 @@ public class VorReceiver {
 	/**
 	 * setNeedlePosition sets the needle position (ONLY USED BY THE CONSTRUCTOR)
 	 * @param position
+	 * @throws IllegalArgumentException
 	 */
 	private void setNeedlePosition(int position) {
-		this.needle = position;
+		if (this.validateRadial(position) >= 0) {
+			this.needle = position;
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 	
 	/**
@@ -498,27 +562,29 @@ public class VorReceiver {
 	 * @return String
 	 */
 	public String getVorStatus() {                
-		return "Detecting incoming radial from VOR Station..." + this.getCurrRadial() +
+		return "Detecting incoming radial from VOR Station..."+
 			   "\nCurrent radial: " + this.getCurrRadial() +
 			   "\nMorse code: " + this.getMorse() +
 		       "\nOpposite Radial: " + this.getOppositeRadial(this.getCurrRadial()) +
 		       "\nOBS (Currently set Intended Radial): " + this.getOBS() +
 		       "\nAbeamed (left of vor station): " + this.getLeftAbeamedRadial() +
 		       "\nAbeamed (right of vor station): " + this.getRightAbeamedRadial() +
+		       "\nNeedle Position: " + this.getNeedlePosition() + 	
 		       "\nIs Abeamed: " + this.isAbeamed() +
 		       "\nIs TO: " + this.isTo() +
-		       "\nIs FROM: " + this.isFrom() + 
-		       "\nNeedle Position: " + this.getNeedlePosition() + "\n";	
+		       "\nIs FROM: " + this.isFrom();
+
 	}
 	
 	
 	/**
-	 * USE FOR DEBUGGING
-	 * printVorStatus prints out the current stats of the vor receiver
+	 * USE FOR DEBUGGING (RECOMMENDED)
+	 * printVorStatus_v1 prints out the current stats of the vor receiver
 	 * similar to getVorStatus except that it just prints out the content
-	 * instead of returning it as a string
+	 * instead of returning it as a string. The print is formatted for
+	 * easy viewing
 	 */
-	public void printVorStatus() {   
+	public void printVorStatus_v1() {   
 		String s = "%-50s";		// formatted to left justified with 50 characters
 		String i = "%d";		// integer
 		String l = "\n";		// newline
@@ -541,182 +607,69 @@ public class VorReceiver {
 		} else {
 			from = "false";
 		}
-		System.out.printf(s + i + l + 
+		System.out.printf(s + l + 
 						  s + i + l + 
 						  s + mod_s + l +
 						  s + i + l +
 						  s + i + l +
 						  s + i + l + 
 						  s + i + l +
+						  s + i + l +
 						  s + mod_s + l +
 						  s + mod_s + l +
-						  s + mod_s + l +
-						  s + i + l,
-						"Detecting incoming radial from VOR Station...", this.getCurrRadial(),
+						  s + mod_s + l,
+						"Detecting incoming radial from VOR Station...",
 						"Current radial:", this.getCurrRadial(),
 						"Morse code:", this.getMorse(),
 						"Opposite Radial:", this.getOppositeRadial(this.getCurrRadial()),
 						"OBS (Currently set Intended Radial):", this.getOBS(),
 						"Abeamed (left of vor station):", this.getLeftAbeamedRadial(),
 						"Abeamed (right of vor station):", this.getRightAbeamedRadial(),
+						"Needle Position:", this.getNeedlePosition(),
 						"Is Abeamed:", abeamed,
 						"Is TO: ", to,
-						"Is FROM: ", from,
-						"Needle Position:", this.getNeedlePosition());
-	}
-	public static void main(String[] args) {
-		// degrees go from 1 - 360, where 0 is also 360. program will automatically changed a 0 argument into 360
-		int incomingRadial = 270;
-		String morse = "LCL";
-		VorReceiver v = new VorReceiver(incomingRadial, morse);
-		v.setOBS(v.getOppositeRadial(v.getCurrRadial()));	 // OBS set to 90 degrees	
-
-		try {
-			
-			/* PARTIAL TEST WHEN OBS (THE INTENDED RADIAL) IS BETWEEN 1 - 180 DEGREES*/
-			System.err.println("Beginning radial test...");
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 181;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 180;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 179;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 1;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 0;  // zero is also 360 (zero is a valid argument but is converted to 360 in the program)
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 359;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			///////////////////////////////////////////////////////////////////////////
-			/*PARTIAL TEST WHEN OBS (THE INTENDED RADIAL) IS BETWEEN 180 -360 DEGREES*/
-			System.out.println("\n"); // double newline
-			System.err.println("Setting new OBS radial...");
-			v.setOBS(90);
-			incomingRadial = 90;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 1;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 360;	// zero is also a valid argument for 360
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 359;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 181;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 180;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 179;
-			v.updateIncomingRadial(incomingRadial);
-			v.printVorStatus();		
-			
-			///////////////////////////////////////////////////
-			/*PARTIAL NEEDLE TEST*/
-			System.out.println("\n"); // double newline
-			System.err.println("Beginning needle Test...");
-			incomingRadial = 270;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 280;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 290;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 300;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 310;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 320;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 330;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 340;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 350;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 360;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();	
-			
-			System.out.println("\n"); // double newline
-			incomingRadial = 10;
-			v.updateIncomingRadial(incomingRadial);
-			v.setOBS(90);
-			v.printVorStatus();
-		
-		} catch (IllegalArgumentException e) {
-			System.err.println("ERROR: OBS values must be within 1-360 degrees, where 360 can also be zero");
+						"Is FROM: ", from);
 		}
+	
+	/**
+	 * USE FOR DEBUGGING (UNSTABLE FOR THE FIRST PRINT BUT SHOULD BE NORMAL FOR THE REST OF THE PRINTS)
+	 * printVorStatus_V2 is similar to printVor_V1 but prints out any false values in red (error stream)
+	 */
+	public void printVorStatus_v2() {
+		String s = "%-50s";		// formatted to left justified with 50 characters
+		String i = "%d";		// integer
+		String l = "\n";		// newline
+		String mod_s = "%-10s";	// formatted to left justified with 10 characters
+
+		System.out.printf(s + l, "Detecting incoming radial from VOR Station...");
+		System.out.printf(s + i + l, "Current radial:",  this.getCurrRadial());
+		System.out.printf(s + mod_s + l, "Morse code:", this.getMorse());
+		System.out.printf(s + i + l, "Opposite Radial:", this.getOppositeRadial(this.getCurrRadial()));
+		System.out.printf(s + i + l, "OBS (Currently set Intended Radial):", this.getOBS());
+		System.out.printf(s + i + l, "Abeamed (left of vor station):", this.getLeftAbeamedRadial());
+		System.out.printf(s + i + l, "Abeamed (right of vor station):", this.getRightAbeamedRadial());
+		System.out.printf(s + i + l, "Needle Position:", this.getNeedlePosition());
+		if (this.isAbeamed()) {
+			System.out.printf(s + mod_s + l, "Is Abeamed:", "true");
+		} else {
+			System.err.printf(s + mod_s + l, "Is Abeamed:", "false");
+		}
+		if (this.isTo()) {
+			System.out.printf(s + mod_s + l, "Is TO", "true");
+		} else {
+			System.err.printf(s + mod_s + l, "Is TO", "false");
+		}
+		if (this.isFrom()) {
+			System.out.printf(s + mod_s + l, "Is FROM:", "true");
+		} else {
+			System.err.printf(s + mod_s + l, "Is FROM:", "false");
+		}
+	}
+	
+	/*DRIVER*/
+	public static void main(String[] args) {
+		PartialTest pt = new PartialTest();
+		//pt.partialToFromTest();
+		pt.partialNeedleTest();
 	}
 }
