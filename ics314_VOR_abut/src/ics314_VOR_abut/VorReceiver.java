@@ -2,6 +2,7 @@ package ics314_VOR_abut;
 import java.util.ArrayList;
 import java.util.List;
 
+import test.JUnit;
 import test.PartialTest;
 
 
@@ -75,6 +76,13 @@ import test.PartialTest;
 // getOppositeRadial and setNeedlePosition methods now throws an IllegalArgumentException if given a wrong degree
 // all values of 10 or -10 are now a constant "NEEDLE_LIMIT"
 
+
+// Change log 4/4/2014
+// Modified by: Gerald Abut
+// validateRadial is now public
+// getLeftAbeamedRadial and getRightAbeamedRadial are now public
+// create JUnit Testing class
+
 public class VorReceiver {
 	private final int MAX_DEGREE = 360;
 	private final int OPPOSITE_DEGREE = 180;
@@ -96,7 +104,7 @@ public class VorReceiver {
 				this.DEGREES.add(i);
 			}
 			this.updateIncomingRadial(incomingRadial); // store value of incoming radial
-			this.setOBS(this.currRadial); // save the start radial to compare later 
+			this.setOBS(this.currRadial); // initial OBS will be set to the current radial
 			this.updateMorseCode(morse); // store morse code
 			
 			// set needle position
@@ -123,8 +131,8 @@ public class VorReceiver {
 				this.DEGREES.add(i);
 			}
 			this.updateIncomingRadial(incomingRadial); // store value of incoming radial
-			this.setOBS(this.currRadial); // save the start radial to compare later 
-			this.updateMorseCode("DID NOT RECEIVE MORSE CODE"); // set the default value of the more code
+			this.setOBS(this.currRadial); // initial OBS is set to the current radial 
+			this.updateMorseCode("NO MORSECODE"); // set the default value of the more code
 			
 			// set needle position
 			if (this.currRadial == this.obs_val) {
@@ -172,7 +180,7 @@ public class VorReceiver {
 	 * @param radial
 	 * @return int
 	 */
-	private int validateRadial(int radial) {
+	public int validateRadial(int radial) {
 		int radialTest = radial;
 		if (radialTest == 0) {
 			radialTest = 360;	// treat degree zero as 360 degrees
@@ -201,6 +209,7 @@ public class VorReceiver {
 	private void updateMorseCode(String newMorseCode) {
 		this.currMorseCode = newMorseCode;
 	}
+	
 	
 	/**
 	 * getDegrees returns all the valid degrees in a list
@@ -361,9 +370,9 @@ public class VorReceiver {
 	 * getLeftAbeamedRadial calculates the degree that is abeamed to the left of the vor station
 	 * @return int
 	 */
-	private int getLeftAbeamedRadial() {
+	public int getLeftAbeamedRadial() {
 		int arrayOffset = this.DEGREES.size();
-		int leftAbeamedOffset = (this.obs_val + ABEAMED_OFFSET + arrayOffset) % arrayOffset;
+		int leftAbeamedOffset = (this.obs_val + ABEAMED_OFFSET + arrayOffset) % arrayOffset;		
 		return this.adjustZeroTo360(leftAbeamedOffset);
 	}
 	
@@ -371,7 +380,7 @@ public class VorReceiver {
 	 * getRightAbeamedRadial calculates the degree that is abeamed to the right of the vor station
 	 * @return int
 	 */
-	private int getRightAbeamedRadial() {
+	public int getRightAbeamedRadial() {
 		int arrayOffset = this.DEGREES.size();
 		int rightAbeamedOffset = (this.obs_val + ABEAMED_OFFSET + ABEAMED_OFFSET + ABEAMED_OFFSET + arrayOffset) % arrayOffset;
 		return this.adjustZeroTo360(rightAbeamedOffset);
@@ -511,7 +520,7 @@ public class VorReceiver {
 			} else if ((currRad == (this.adjustDegree(obs_opposite, 9))) || (currRad == (this.adjustDegree(obs_opposite, this.NEEDLE_LIMIT)))) {															// right of opposite of intended radial
 				this.needle = this.NEEDLE_LIMIT;
 			} else {
-				// SHOULD NOT GO HERE.
+				this.needle = -this.NEEDLE_LIMIT;	// outside the range of the needle from the left of current radial
 			}
 		} else { // plane is pointing in the degrees away from the intended radial
 			// isFrom = true
@@ -538,7 +547,7 @@ public class VorReceiver {
 			} else if ((currRad == (this.adjustDegree(obs, -9))) || (currRad == (this.adjustDegree(obs, -this.NEEDLE_LIMIT)))) {													// right of  intended radial
 				this.needle = this.NEEDLE_LIMIT;
 			} else {
-				// SHOULD NOT GO HERE.
+				this.needle = this.NEEDLE_LIMIT;	// outside the range of the needle from the right of current radial
 			}
 		}
 	}
@@ -664,12 +673,5 @@ public class VorReceiver {
 		} else {
 			System.err.printf(s + mod_s + l, "Is FROM:", "false");
 		}
-	}
-	
-	/*DRIVER*/
-	public static void main(String[] args) {
-		PartialTest pt = new PartialTest();
-		//pt.partialToFromTest();
-		pt.partialNeedleTest();
 	}
 }
