@@ -83,6 +83,11 @@ import test.PartialTest;
 // getLeftAbeamedRadial and getRightAbeamedRadial are now public
 // create JUnit Testing class
 
+// Change log 4/4/2014
+// included the finaVORGUI.java file from Adrian
+// reverted the moveNeedle to DO NOTHING for the last "else" clause for each case
+// adjusted Junit testing to reflect changes made from the moveNeedle method
+
 public class VorReceiver {
 	private final int MAX_DEGREE = 360;
 	private final int OPPOSITE_DEGREE = 180;
@@ -520,7 +525,7 @@ public class VorReceiver {
 			} else if ((currRad == (this.adjustDegree(obs_opposite, 9))) || (currRad == (this.adjustDegree(obs_opposite, this.NEEDLE_LIMIT)))) {															// right of opposite of intended radial
 				this.needle = this.NEEDLE_LIMIT;
 			} else {
-				this.needle = -this.NEEDLE_LIMIT;	// outside the range of the needle from the left of current radial
+				// DO NOTHING
 			}
 		} else { // plane is pointing in the degrees away from the intended radial
 			// isFrom = true
@@ -547,7 +552,7 @@ public class VorReceiver {
 			} else if ((currRad == (this.adjustDegree(obs, -9))) || (currRad == (this.adjustDegree(obs, -this.NEEDLE_LIMIT)))) {													// right of  intended radial
 				this.needle = this.NEEDLE_LIMIT;
 			} else {
-				this.needle = this.NEEDLE_LIMIT;	// outside the range of the needle from the right of current radial
+				// DO NOTHING
 			}
 		}
 	}

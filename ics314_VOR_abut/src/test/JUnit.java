@@ -992,7 +992,7 @@ public class JUnit {
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial);
 		v.setOBS(v.getOppositeRadial(incomingRadial));
-		int needleValue = 10;
+		int needleValue = 0;
 		v.updateIncomingRadial(91);
 		printResult("getNeedlePosition", needleValue, v.getNeedlePosition()); 
 		assertEquals(needleValue, v.getNeedlePosition()); 
