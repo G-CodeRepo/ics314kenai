@@ -88,6 +88,9 @@ import test.PartialTest;
 // reverted the moveNeedle to DO NOTHING for the last "else" clause for each case
 // adjusted Junit testing to reflect changes made from the moveNeedle method
 
+// Change log 4/5/2014
+// included morseCodeIdentifier
+
 public class VorReceiver {
 	private final int MAX_DEGREE = 360;
 	private final int OPPOSITE_DEGREE = 180;
@@ -110,7 +113,7 @@ public class VorReceiver {
 			}
 			this.updateIncomingRadial(incomingRadial); // store value of incoming radial
 			this.setOBS(this.currRadial); // initial OBS will be set to the current radial
-			this.updateMorseCode(morse); // store morse code
+			this.updateMorseCode(this.morseCodeIdentifier(morse)); // store morse code
 			
 			// set needle position
 			if (this.currRadial == this.obs_val) {
@@ -137,7 +140,7 @@ public class VorReceiver {
 			}
 			this.updateIncomingRadial(incomingRadial); // store value of incoming radial
 			this.setOBS(this.currRadial); // initial OBS is set to the current radial 
-			this.updateMorseCode("NO MORSECODE"); // set the default value of the more code
+			this.updateMorseCode(this.morseCodeIdentifier("NO MORSE CODE")); // set the default value of the more code
 			
 			// set needle position
 			if (this.currRadial == this.obs_val) {
@@ -213,6 +216,85 @@ public class VorReceiver {
 	 */
 	private void updateMorseCode(String newMorseCode) {
 		this.currMorseCode = newMorseCode;
+	}
+	
+	/**
+	 * moreseCodeIndentifier translate the given morse code
+	 * and returns a string
+	 * ex: "." => "A"
+	 * ex: ".." => "B"
+	 * @param mc
+	 * @return string
+	 */
+	public String morseCodeIdentifier(String mc){
+		  String[] mcSplit = mc.split("\\s+");
+		  String morseCode = "";
+		  for(int i = 0; i < mcSplit.length; i++){
+			   switch(mcSplit[i]){
+				   case ".-":   mcSplit[i] = "A";
+				    break;
+				   case "-...":  mcSplit[i] = "B";
+				    break;
+				   case "-.-.":  mcSplit[i] = "C";
+				    break;
+				   case "-..":  mcSplit[i] = "D";
+				    break;
+				   case ".":   mcSplit[i] = "E";
+				    break;
+				   case "..-.":  mcSplit[i] = "F";
+				    break;
+				   case "--.":  mcSplit[i] = "G";
+				    break; 
+				   case "....":  mcSplit[i] = "H";
+				    break;
+				   case "..":   mcSplit[i] = "I";
+				    break;
+				   case ".---":  mcSplit[i] = "J";
+				    break;
+				   case "-.-":  mcSplit[i] = "K";
+				    break;
+				   case ".-..":  mcSplit[i] = "L";
+				    break;
+				   case "--":   mcSplit[i] = "M";
+				    break;
+				   case "-.":   mcSplit[i] = "N";
+				    break;
+				   case "---":  mcSplit[i] = "O";
+				    break;
+				   case ".--.":  mcSplit[i] = "P";
+				    break;
+				   case "--.-":  mcSplit[i] = "Q";
+				    break;
+				   case ".-.":  mcSplit[i] = "R";
+				    break;
+				   case "...":  mcSplit[i] = "S";
+				    break;
+				   case "-":   mcSplit[i] = "T";
+				    break;
+				   case "..-":  mcSplit[i] = "U";
+				    break;
+				   case "...-":  mcSplit[i] = "V";
+				    break;
+				   case ".--":  mcSplit[i] = "W";
+				    break;
+				   case "-..-":  mcSplit[i] = "X";
+				    break;
+				   case "-.--":  mcSplit[i] = "Y";
+				    break;
+				   case "--..":  mcSplit[i] = "Z";
+				   	break;	
+				   default:
+					   mcSplit[i] = "?";
+					   break;
+		   }
+		   //System.out.println("testing arrays: " + mcSplit[i]);
+		  }
+		  morseCode += mcSplit[0];
+		  morseCode += mcSplit[1];
+		  if(mcSplit[2] != null) {
+			  morseCode += mcSplit[2];
+		  }
+		  return morseCode;
 	}
 	
 	
@@ -679,4 +761,9 @@ public class VorReceiver {
 			System.err.printf(s + mod_s + l, "Is FROM:", "false");
 		}
 	}
+	
+	/*public static void main(String[] args) {
+		VorReceiver v = new VorReceiver(270, "A B C"); //".- -... -.-.");
+		System.out.println(v.getMorse());
+	}*/
 }

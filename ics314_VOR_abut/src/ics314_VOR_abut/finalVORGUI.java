@@ -40,21 +40,21 @@ public class finalVORGUI extends JPanel{
 	 * vor image), and it is going to add in the VOR radar and a radial
 	 * indicator that will let the user know which radial he/she is on
 	 */
-	public finalVORGUI(){
-		int deg = 270;
-		this.vor = new VorReceiver(deg,"LHK");
+	public finalVORGUI(int r){
+		int deg = r;
+		this.vor = new VorReceiver(deg,".- -... -.-.");
 		this.vor.setOBS(90);	// set the OBS to 30
 		JLayeredPane lp = new JLayeredPane();
 		lp.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setBackground(Color.white);
 		lp.setLayout(null);
 		lp.setFocusable(true);
-		degrees = this.vor.getCurrRadial(); //to edit: this is going to be the radial the radar is currently facing
+		degrees = deg; 	// r is intended radial
 	    CurrentRadial = new JLabel("Intended Radial: " + degrees); //A string that is always going to be above the radar. it's going to let the user know the current radial
 		CurrentRadial.setBounds(220, 18, 200, 200);
 		MorseCode = new JLabel("Station: TO ENTER HERE");
 		MorseCode.setBounds(200,500,200,50);
-		MorseCode.setText(this.vor.getMorse());
+		MorseCode.setText("Station: " + this.vor.getMorse());
 		
 		//vor.printVorStatus_v1();
 		rotationPanel = new JPanel();
@@ -65,7 +65,7 @@ public class finalVORGUI extends JPanel{
 		needle.setBounds(100,0, needle.getPreferredSize().width, needle.getPreferredSize().height);
 		OBS = new JPanel();
 		OBS = new AddButtons();
-		OBS.setBounds(170, 350, 200, 100);
+		OBS.setBounds(110, 350, 200, 100);
 		lp.add(rotationPanel, Integer.valueOf(1));
 		lp.add(needle, Integer.valueOf(2));
 		lp.add(OBS,Integer.valueOf(3));
@@ -117,16 +117,16 @@ public class finalVORGUI extends JPanel{
 		 *
 		 */
 		public class Buttons extends JPanel implements ActionListener{
-			int w = 200;
-			int h = 100;
+			int w = 60;
+			int h = 60;
 			JButton min;
 			JButton plus;
 			public Buttons(){
 				setPreferredSize(new Dimension(w,h));
 				setBackground(new Color(0,0,0,0));
 				setLayout(new BorderLayout());
-				min = new JButton("minus");
-				plus = new JButton("plus");
+				min = new JButton("-");
+				plus = new JButton("+");
 				//min.setPreferredSize(new Dimension(100,10));
 				//plus.setPreferredSize(new Dimension(100,10));
 				min.setBackground(Color.WHITE);
@@ -141,8 +141,8 @@ public class finalVORGUI extends JPanel{
 				plus.addActionListener(this);
 				min.setActionCommand("-");
 				plus.setActionCommand("+");
-				add(plus, BorderLayout.EAST);
-				add(min, BorderLayout.WEST);
+				add(plus, BorderLayout.NORTH);
+				add(min, BorderLayout.CENTER);
 			}
 			
 			/**
@@ -394,7 +394,7 @@ public class finalVORGUI extends JPanel{
      * @param args
      */
     public static void main(String[] args){  
-    	finalVORGUI test = new finalVORGUI();
+    	finalVORGUI test = new finalVORGUI(270);
     	JFrame frame = new JFrame("VOR Radar");  
     	frame.setContentPane(test);  
         frame.pack();  
