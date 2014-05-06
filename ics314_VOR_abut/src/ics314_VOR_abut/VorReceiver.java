@@ -222,7 +222,7 @@ public class VorReceiver {
 	/**
 	 * moreseCodeIndentifier translate the given morse code
 	 * and returns a string. if the number of morse code
-	 * exceeds 3. then return ???
+	 * is not 2 or 3 then return ???
 	 * ex: "." => "A"
 	 * ex: ".." => "B"
 	 * @param mc
@@ -230,73 +230,74 @@ public class VorReceiver {
 	 */
 	public String morseCodeIdentifier(String mc){
 		  String[] mcSplit = mc.split("\\s+");
-		  if (mcSplit.length != 3) {
+		  if (mcSplit.length < 2) {
 			  return "???";	// unknown
+		  } else if ( mcSplit.length > 3) {
+			  return "???"; // unknown
 		  }
 		  String morseCode = "";
 		  for(int i = 0; i < mcSplit.length; i++){
 			   switch(mcSplit[i]){
 				   case ".-":   mcSplit[i] = "A";
-				    break;
+				    	break;
 				   case "-...":  mcSplit[i] = "B";
-				    break;
+				    	break;
 				   case "-.-.":  mcSplit[i] = "C";
-				    break;
+				    	break;
 				   case "-..":  mcSplit[i] = "D";
-				    break;
+				    	break;
 				   case ".":   mcSplit[i] = "E";
-				    break;
+				    	break;
 				   case "..-.":  mcSplit[i] = "F";
-				    break;
+				    	break;
 				   case "--.":  mcSplit[i] = "G";
-				    break; 
+				    	break; 
 				   case "....":  mcSplit[i] = "H";
-				    break;
+				    	break;
 				   case "..":   mcSplit[i] = "I";
-				    break;
+				    	break;
 				   case ".---":  mcSplit[i] = "J";
-				    break;
+				    	break;
 				   case "-.-":  mcSplit[i] = "K";
-				    break;
+				    	break;
 				   case ".-..":  mcSplit[i] = "L";
-				    break;
+				    	break;
 				   case "--":   mcSplit[i] = "M";
-				    break;
+				    	break;
 				   case "-.":   mcSplit[i] = "N";
-				    break;
+				    	break;
 				   case "---":  mcSplit[i] = "O";
-				    break;
+				    	break;
 				   case ".--.":  mcSplit[i] = "P";
-				    break;
+				    	break;
 				   case "--.-":  mcSplit[i] = "Q";
-				    break;
+				    	break;
 				   case ".-.":  mcSplit[i] = "R";
-				    break;
+				    	break;
 				   case "...":  mcSplit[i] = "S";
-				    break;
+				    	break;
 				   case "-":   mcSplit[i] = "T";
-				    break;
+				    	break;
 				   case "..-":  mcSplit[i] = "U";
-				    break;
+				    	break;
 				   case "...-":  mcSplit[i] = "V";
-				    break;
+				    	break;
 				   case ".--":  mcSplit[i] = "W";
-				    break;
+				    	break;
 				   case "-..-":  mcSplit[i] = "X";
-				    break;
+				    	break;
 				   case "-.--":  mcSplit[i] = "Y";
-				    break;
+				    	break;
 				   case "--..":  mcSplit[i] = "Z";
-				   	break;	
+				   		break;	
 				   default:
-					   mcSplit[i] = "?";
-					   break;
+					   	mcSplit[i] = "?";
+					   	break;
 			   }
-		   //System.out.println("testing arrays: " + mcSplit[i]);
 		  }
 		  morseCode += mcSplit[0];
 		  morseCode += mcSplit[1];
-		  if(mcSplit[2] != null) {
+		  if(mcSplit.length == 3 && mcSplit[2] != null) {
 			  morseCode += mcSplit[2];
 		  }
 		  return morseCode;

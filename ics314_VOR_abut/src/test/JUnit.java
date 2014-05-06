@@ -371,6 +371,15 @@ public class JUnit {
 		String morsecode = "--. .. -";
 		printResult("updateMorseCode", "GIT", v.morseCodeIdentifier(morsecode)); 
 		assertEquals("GIT", v.morseCodeIdentifier(morsecode));
+	}
+	
+	@Test
+	public void morseCodeIdentifier_test3() {	
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial);
+		String morsecode = "--.";
+		printResult("updateMorseCode", "???", v.morseCodeIdentifier(morsecode)); 
+		assertEquals("???", v.morseCodeIdentifier(morsecode));
 	}	
 	//************************************************************************
 	// OUTPUT IS TOO LARGE (UNCOMMENT TO SEE RESULTS
