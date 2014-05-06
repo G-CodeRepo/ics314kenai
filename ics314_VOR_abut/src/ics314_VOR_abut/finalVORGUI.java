@@ -41,18 +41,20 @@ public class finalVORGUI extends JPanel{
 	 * indicator that will let the user know which radial he/she is on
 	 */
 	public finalVORGUI(){
-		vor = new VorReceiver(30,"LHK");
+		int deg = 270;
+		this.vor = new VorReceiver(deg,"LHK");
+		this.vor.setOBS(90);	// set the OBS to 30
 		JLayeredPane lp = new JLayeredPane();
 		lp.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setBackground(Color.white);
 		lp.setLayout(null);
 		lp.setFocusable(true);
-		degrees = 1; //to edit: this is going to be the radial the radar is currently facing
-	    CurrentRadial = new JLabel("Radial: " + degrees); //A string that is always going to be above the radar. it's going to let the user know the current radial
-		CurrentRadial.setBounds(250, 20, 100, 200);
+		degrees = this.vor.getCurrRadial(); //to edit: this is going to be the radial the radar is currently facing
+	    CurrentRadial = new JLabel("Intended Radial: " + degrees); //A string that is always going to be above the radar. it's going to let the user know the current radial
+		CurrentRadial.setBounds(220, 18, 200, 200);
 		MorseCode = new JLabel("Station: TO ENTER HERE");
 		MorseCode.setBounds(200,500,200,50);
-		MorseCode.setText(vor.getMorse());
+		MorseCode.setText(this.vor.getMorse());
 		
 		//vor.printVorStatus_v1();
 		rotationPanel = new JPanel();
@@ -156,8 +158,9 @@ public class finalVORGUI extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if("-".equals(e.getActionCommand())){  
-					CurrentRadial.setText("Radial: " + degrees);
-					vor.updateIncomingRadial(getDeg());
+					CurrentRadial.setText("Intended Radial: " + degrees);
+				//	vor.updateIncomingRadial(getDeg());
+					vor.setOBS(getDeg());
 					calcNeedPos();  
 					degrees--;
 					
@@ -173,8 +176,11 @@ public class finalVORGUI extends JPanel{
 			 		   vor.printVorStatus_v1();
 			 	   }  
 			 	   if("+".equals(e.getActionCommand())){ 
-			 		   CurrentRadial.setText("Radial: " + degrees);
-			 		   vor.updateIncomingRadial(getDeg());
+			 		   CurrentRadial.setText("Intended Radial: " + degrees);
+			 		  // vor.updateIncomingRadial(getDeg());
+			 		   
+			 		   vor.setOBS(getDeg());
+
 			 		   calcNeedPos();
 			 		   degrees++;
 			 		   //x += 2;
