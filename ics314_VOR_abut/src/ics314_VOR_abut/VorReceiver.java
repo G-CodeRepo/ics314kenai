@@ -90,6 +90,7 @@ import test.PartialTest;
 
 // Change log 4/5/2014
 // included morseCodeIdentifier
+// number of morse code must only be 3. less than 3 or greater than 3 will have ???
 
 public class VorReceiver {
 	private final int MAX_DEGREE = 360;
@@ -220,7 +221,8 @@ public class VorReceiver {
 	
 	/**
 	 * moreseCodeIndentifier translate the given morse code
-	 * and returns a string
+	 * and returns a string. if the number of morse code
+	 * exceeds 3. then return ???
 	 * ex: "." => "A"
 	 * ex: ".." => "B"
 	 * @param mc
@@ -228,6 +230,9 @@ public class VorReceiver {
 	 */
 	public String morseCodeIdentifier(String mc){
 		  String[] mcSplit = mc.split("\\s+");
+		  if (mcSplit.length != 3) {
+			  return "???";	// unknown
+		  }
 		  String morseCode = "";
 		  for(int i = 0; i < mcSplit.length; i++){
 			   switch(mcSplit[i]){
@@ -286,7 +291,7 @@ public class VorReceiver {
 				   default:
 					   mcSplit[i] = "?";
 					   break;
-		   }
+			   }
 		   //System.out.println("testing arrays: " + mcSplit[i]);
 		  }
 		  morseCode += mcSplit[0];
@@ -761,9 +766,4 @@ public class VorReceiver {
 			System.err.printf(s + mod_s + l, "Is FROM:", "false");
 		}
 	}
-	
-	/*public static void main(String[] args) {
-		VorReceiver v = new VorReceiver(270, "A B C"); //".- -... -.-.");
-		System.out.println(v.getMorse());
-	}*/
 }

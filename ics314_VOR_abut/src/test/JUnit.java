@@ -12,7 +12,7 @@ import ics314_VOR_abut.VorReceiver;
 public class JUnit {	
 	@Test
 	public void constructor1_test1() {
-		String morsecode = "LCL";
+		String morsecode = ".- -... -.-.";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
 		printResult("constructor1: getCurrRadial", 360, v.getCurrRadial());
@@ -20,7 +20,7 @@ public class JUnit {
 	}
 	@Test
 	public void constructor1_test2() {
-		String morsecode = "LCL";
+		String morsecode = ".- -... -.-.";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
 		printResult("constructor1: getOBS", 360, v.getCurrRadial());
@@ -28,15 +28,15 @@ public class JUnit {
 	}
 	@Test
 	public void constructor1_test3() {
-		String morsecode = "LCL";
+		String morsecode = ".- -... -.-.";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("constructor1: getMorse", "LCL", v.getMorse());
-		assertEquals("LCL", v.getMorse());
+		printResult("constructor1: getMorse", "ABC", v.getMorse());
+		assertEquals("ABC", v.getMorse());
 	}
 	@Test
 	public void constructor1_test4() {
-		String morsecode = "LCL";
+		String morsecode = ".- -... -.-.";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
 		printResult("constructor1: getNeedlePosition", 360, v.getCurrRadial());
@@ -61,8 +61,8 @@ public class JUnit {
 	public void constructor2_test3() {
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial);
-		printResult("constructor2: getMorse", "NO MORSECODE", v.getMorse());
-		assertEquals("NO MORSECODE", v.getMorse());
+		printResult("constructor2: getMorse", "???", v.getMorse());
+		assertEquals("???", v.getMorse());
 	}
 	@Test
 	public void constructor2_test4() {
@@ -283,53 +283,95 @@ public class JUnit {
 	//************************************************************************
 	@Test
 	public void getMorse_test1() {
-		String morsecode = "LCL";
+		String morsecode = "- --- --";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("getMorse", morsecode, v.getMorse());
-		assertEquals(morsecode, v.getMorse());
+		printResult("getMorse", "TOM", v.getMorse());
+		assertEquals("TOM", v.getMorse());
 	}
 	@Test
 	public void getMorse_test2() {
-		String morsecode = "PDP";
+		String morsecode = "--.- ... -.-";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("getMorse", morsecode, v.getMorse());
-		assertEquals(morsecode, v.getMorse());
+		printResult("getMorse", "QSK", v.getMorse());
+		assertEquals("QSK", v.getMorse());
 	}
 	@Test
 	public void getMorse_test3() {
-		String morsecode = "CPR";
+		String morsecode = ".-.. . -..";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("getMorse", morsecode, v.getMorse());
-		assertEquals(morsecode, v.getMorse());
+		printResult("getMorse", "LED", v.getMorse());
+		assertEquals("LED", v.getMorse());
 	}
 	@Test
 	public void getMorse_test4() {
-		String morsecode = "LED";
+		String morsecode = "..-. .. .---";
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("getMorse", morsecode, v.getMorse());
-		assertEquals(morsecode, v.getMorse());
+		printResult("getMorse", "FIJ", v.getMorse());
+		assertEquals("FIJ", v.getMorse());
+	}
+	@Test
+	public void getMorse_test5() {
+		String morsecode = "..-. .. .--- ..-";
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
+		printResult("getMorse", "???", v.getMorse());
+		assertEquals("???", v.getMorse());
+	}
+	
+	@Test
+	public void getMorse_test6() {
+		String morsecode = "..-";
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
+		printResult("getMorse", "???", v.getMorse());
+		assertEquals("???", v.getMorse());
 	}
 	//************************************************************************	
 	@Test
 	public void updateMorseCode_test1() {	// updatedMorseCode is a private method
-		String morsecode = "LCL";			// constructor uses updatedMorseCode method 
+		String morsecode = ".- -... -.-.";			// constructor uses updatedMorseCode method 
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("updateMorseCode", morsecode, v.getMorse()); 
-		assertEquals(morsecode, v.getMorse());
+		printResult("updateMorseCode", "ABC", v.getMorse()); 
+		assertEquals("ABC", v.getMorse());
 	}
 	@Test
 	public void updateMorseCode_test2() {	// updatedMorseCode is a private method
-		String morsecode = "CAT";			// constructor uses updatedMorseCode method 
+		String morsecode = "-..- -.-- --..";// constructor uses updatedMorseCode method 
 		int incomingRadial = 360;
 		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
-		printResult("updateMorseCode", morsecode, v.getMorse()); 
-		assertEquals(morsecode, v.getMorse());
+		printResult("updateMorseCode", "XYZ", v.getMorse()); 
+		assertEquals("XYZ", v.getMorse());
 	}
+	@Test
+	public void updateMorseCode_test3() {	// updatedMorseCode is a private method
+		String morsecode = "--..";// constructor uses updatedMorseCode method 
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial, morsecode);
+		printResult("updateMorseCode", "???", v.getMorse()); 
+		assertEquals("???", v.getMorse());
+	}
+	//************************************************************************
+	@Test
+	public void morseCodeIdentifier_test1() {	
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial);
+		String morsecode = "--..";
+		printResult("updateMorseCode", "???", v.morseCodeIdentifier(morsecode)); 
+		assertEquals("???", v.morseCodeIdentifier(morsecode));
+	}
+	@Test
+	public void morseCodeIdentifier_test2() {	
+		int incomingRadial = 360;
+		VorReceiver v = new VorReceiver(incomingRadial);
+		String morsecode = "--. .. -";
+		printResult("updateMorseCode", "GIT", v.morseCodeIdentifier(morsecode)); 
+		assertEquals("GIT", v.morseCodeIdentifier(morsecode));
+	}	
 	//************************************************************************
 	// OUTPUT IS TOO LARGE (UNCOMMENT TO SEE RESULTS
 	/*@Test
